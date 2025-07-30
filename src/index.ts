@@ -1,5 +1,5 @@
 import app from "./app";
-import { TIMEOUT_CHECK_INTERVAL } from "./constants";
+import { TIMEOUT_CHECK_INTERVAL } from "./constants/process";
 import { checkTimeout } from "./jobs/timeout";
 
 const PORT = process.env.PORT || 3000;
