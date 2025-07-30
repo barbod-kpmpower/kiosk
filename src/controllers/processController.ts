@@ -15,8 +15,12 @@ export const getProcess = (req: Request, res: Response) => {
 };
 
 export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Response) => {
-  ProcessManager.getInstance().create(req.body);
-  res.status(201).json({ message: "Process created successfully" });
+  try {
+    processService.create(req.body);
+    res.status(201).json({ message: "Process created successfully" });
+  } catch (error ) {
+    return internalServerError(res);
+  }
 };
 
 export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
