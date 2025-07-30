@@ -7,12 +7,17 @@ import { IApiResponse } from "../types/api";
 import { IProcess, IProcessCreateDto } from "../types/process";
 import { createApiError, internalServerError } from "../utils/api";
 
-export const testProcess = (req: Request, res: Response) => {
+export const testProcess = (_: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
 };
 
-export const getProcess = (req: Request, res: Response) => {
-  res.status(200).json(ProcessManager.getInstance().getProcess());
+export const getProcess = (_: Request, res: Response<IApiResponse<IProcess | null>>) => {
+  try {
+    const process = ProcessManager.getInstance().getProcess();
+    res.status(200).json({ success: true, ...(!process && { message: "No active process" }), data: process });
+  } catch (error) {
+    return internalServerError(res);
+  }
 };
 
 export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Response<IApiResponse<IProcess>>) => {

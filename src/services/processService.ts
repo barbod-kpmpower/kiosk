@@ -4,6 +4,9 @@ import ProcessManager from "../ProcessManager";
 import { IProcessCreateDto } from "../types/process";
 
 export const processService = {
+  get: () => {
+    return ProcessManager.getInstance().getProcess();
+  },
   create: (process: IProcessCreateDto) => {
     if (!ProcessManager.getInstance().getProcess()) return ProcessManager.getInstance().create(process);
     else throw new ActiveProcessExistsError();
