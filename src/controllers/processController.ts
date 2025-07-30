@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
-import { IProcessCreateDto } from "../types/process";
 import ProcessManager from "../ProcessManager";
-import ProcessService from "../services/processService";
+import { NoActiveProcessError } from "../errors/process/no-active-process-error";
+import { processService } from "../services/processService";
+import { IApiResponse } from "../types/api";
+import { IProcessCreateDto } from "../types/process";
+import { internalServerError } from "../utils/api";
 
 export const testProcess = (req: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
@@ -16,14 +19,15 @@ export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Resp
   res.status(201).json({ message: "Process created successfully" });
 };
 
-export const pauseProcess = (req: Request, res: Response) => {
-  const process = ProcessManager.getInstance().getProcess();
-
-  if (!process) {
-    return res.status(404).json({ message: "No process found to pause" });
+export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
+  try {
+    processService.pause();
+    return res.status(200).json({ success: true, message: "Process paused" });
+  } catch (error) {
+    const success = false;
+    if (error instanceof NoActiveProcessError) {
+      return res.status(400).json({ success, message: error.message });
+    }
+    return internalServerError(res);
   }
-
-  ProcessService.pause();
-
-  res.status(200).json({ message: "Process paused", data: process });
 };
