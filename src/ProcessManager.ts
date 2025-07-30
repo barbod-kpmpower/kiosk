@@ -34,6 +34,22 @@ class ProcessManager {
     this.interval = null;
   }
 
+  // TODO: Determine whether I should have all these null checks?
+  public pause() {
+    if (this.process && this.interval) {
+      this.updatePrevSessionsDuration();
+      this.process.status = "paused";
+    }
+  }
+
+  private updatePrevSessionsDuration() {
+    if (this.process && this.interval) {
+      this.interval.prevSessionsDuration += Date.now() - this.interval.startTime.getTime();
+    }
+  }
+
+  // Getters
+
   public getProcess() {
     return this.process;
   }
