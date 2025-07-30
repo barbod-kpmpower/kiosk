@@ -3,7 +3,7 @@ import ProcessManager from "../ProcessManager";
 import { NoActiveProcessError } from "../errors/process/no-active-process-error";
 import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
-import { IProcessCreateDto } from "../types/process";
+import { IProcess, IProcessCreateDto } from "../types/process";
 import { internalServerError } from "../utils/api";
 
 export const testProcess = (req: Request, res: Response) => {
@@ -14,11 +14,11 @@ export const getProcess = (req: Request, res: Response) => {
   res.status(200).json(ProcessManager.getInstance().getProcess());
 };
 
-export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Response) => {
+export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Response<IApiResponse<IProcess>>) => {
   try {
-    processService.create(req.body);
-    res.status(201).json({ message: "Process created successfully" });
-  } catch (error ) {
+    const process = processService.create(req.body);
+    res.status(201).json({ success: true, message: "Process created successfully", data: process });
+  } catch (error) {
     return internalServerError(res);
   }
 };

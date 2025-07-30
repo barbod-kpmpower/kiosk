@@ -27,6 +27,8 @@ class ProcessManager {
       startTime: this.process.createdAt,
       prevSessionsDuration: 0,
     };
+
+    return this.process;
   }
 
   public reset() {

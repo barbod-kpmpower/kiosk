@@ -4,7 +4,7 @@ import { IProcessCreateDto } from "../types/process";
 
 export const processService = {
   create: (process: IProcessCreateDto) => {
-    ProcessManager.getInstance().create(process);
+    return ProcessManager.getInstance().create(process);
   },
   pause: () => {
     if (ProcessManager.getInstance().getProcess()) ProcessManager.getInstance().pause();
