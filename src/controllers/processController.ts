@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ProcessManager from "../ProcessManager";
 import { ProcessAlreadyRunning } from "../errors/process/process-already-running-error";
-import { ProcessNotFound } from "../errors/process/process-not-found-error";
+import { ProcessDoesNotExist } from "../errors/process/no-process-error";
 import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
 import { IProcess, IProcessCreateDto } from "../types/process";
@@ -39,7 +39,7 @@ export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
     processService.pause();
     return res.status(200).json({ success: true, message: "Process paused" });
   } catch (error) {
-    if (error instanceof ProcessNotFound) {
+    if (error instanceof ProcessDoesNotExist) {
       return res
         .status(400)
         .json({ success: false, message: error.message, error: createApiError("NO_ACTIVE_PROCESS") });
