@@ -35,4 +35,12 @@ export const processService = {
     
     manager().resume();
   },
+
+  timeout: () => {
+    manager().timeout();
+  },
+
+  overtime: () => {
+    manager().overtime();
+  }
 };

@@ -1,4 +1,4 @@
-import { TARGET_DURATION } from "./constants/process";
+import { OVERTIME_TARGET_DURATION, TARGET_DURATION, TIMEOUT_TARGET_DURATION } from "./constants/process";
 import { IInterval, IProcess, IProcessCreateDto } from "./types/process";
 
 class ProcessManager {
@@ -51,6 +51,26 @@ class ProcessManager {
     if (this.process && this.interval) {
       this.interval.startTime = new Date();
       this.process.isRunning = true;
+    }
+  }
+
+  public timeout() {
+    if (this.process && this.interval) {
+      this.process.targetDuration = TIMEOUT_TARGET_DURATION;
+      this.process.pendingAction = true;
+
+      this.interval.prevSessionsDuration = 0;
+      this.interval.startTime = new Date();
+    }
+  }
+  
+  public overtime() {
+    if (this.process && this.interval) {
+      this.process.targetDuration = OVERTIME_TARGET_DURATION;
+      this.process.pendingAction = false;
+      
+      this.interval.prevSessionsDuration = 0;
+      this.interval.startTime = new Date();
     }
   }
 

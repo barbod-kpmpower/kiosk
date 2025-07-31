@@ -56,3 +56,12 @@ export const resumeProcess = (_: Request, res: Response<IApiResponse>) => {
     return internalServerError(res);
   }
 };
+
+export const overtimeProcess = (_: Request, res: Response<IApiResponse>) => {
+  try {
+    processService.overtime();
+    return res.status(200).json({ success: true, message: "Process resumed in overtime" });
+  } catch (error) {
+    return internalServerError(res);
+  }
+}

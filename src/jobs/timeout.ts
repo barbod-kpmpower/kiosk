@@ -1,4 +1,5 @@
 import ProcessManager from "../ProcessManager";
+import { processService } from "../services/processService";
 
 export const checkTimeout = () => {
   const processManager = ProcessManager.getInstance();
@@ -11,7 +12,14 @@ export const checkTimeout = () => {
     
     if (process.isRunning && duration > process.targetDuration) {
       console.log("Process has timed out");
-      processManager.reset();
+
+      if (process.pendingAction) {
+        console.log("EXPIRE");
+        processManager.reset();
+      } else {
+        console.log("DISPLAY POPUP");
+        processService.timeout();
+      }
     }
   }
 };
