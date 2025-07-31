@@ -4,8 +4,9 @@ import { createProcess, getProcess, pauseProcess, testProcess } from "../control
 const router = Router();
 
 router.get("/test", testProcess);
-router.get("/get", getProcess);
-router.post("/start", createProcess);
-router.put("/pause", pauseProcess);
+router.get("/status", getProcess);
+router.post("/create", createProcess);
+router.patch("/pause", pauseProcess);
+router.patch("/resume", pauseProcess);
 
 export default router;

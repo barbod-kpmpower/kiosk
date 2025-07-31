@@ -23,7 +23,7 @@ export const getProcess = (_: Request, res: Response<IApiResponse<IProcess | nul
 export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Response<IApiResponse<IProcess>>) => {
   try {
     const process = processService.create(req.body);
-    res.status(201).json({ success: true, message: "Process is created successfully", data: process });
+    res.status(201).json({ success: true, message: "Process created", data: process });
   } catch (error) {
     if (error instanceof ProcessAlreadyExistsError) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
@@ -35,7 +35,19 @@ export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Resp
 export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
   try {
     processService.pause();
-    return res.status(200).json({ success: true, message: "Process is paused" });
+    return res.status(200).json({ success: true, message: "Process paused" });
+  } catch (error) {
+    if (error instanceof NoProcessError || error instanceof ProcessAlreadyPausedError) {
+      return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
+    }
+    return internalServerError(res);
+  }
+};
+
+export const resumeProcess = (_: Request, res: Response<IApiResponse>) => {
+  try {
+    processService.resume();
+    return res.status(200).json({ success: true, message: "Process resumed" });
   } catch (error) {
     if (error instanceof NoProcessError || error instanceof ProcessAlreadyPausedError) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });

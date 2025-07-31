@@ -14,6 +14,8 @@ class ProcessManager {
     return ProcessManager.instance;
   }
 
+  // ===== Utilities =====
+
   public create(process: IProcessCreateDto) {
     this.process = {
       component: process.component,
@@ -39,18 +41,19 @@ class ProcessManager {
   // TODO: Determine whether I should have all these null checks?
   public pause() {
     if (this.process && this.interval) {
-      this.updatePrevSessionsDuration();
+      this.interval.prevSessionsDuration += Date.now() - this.interval.startTime.getTime();
       this.process.status = "paused";
     }
   }
 
-  private updatePrevSessionsDuration() {
+  public resume() {
     if (this.process && this.interval) {
-      this.interval.prevSessionsDuration += Date.now() - this.interval.startTime.getTime();
+      this.interval.startTime = new Date();
+      this.process.status = "running";
     }
   }
 
-  // Getters
+  // ===== Getters =====
 
   public getProcess() {
     return this.process;
