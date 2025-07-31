@@ -22,7 +22,7 @@ export const processService = {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
-    if (process.status === "paused") throw new ProcessAlreadyPausedError();
+    if (!process.isRunning) throw new ProcessAlreadyPausedError();
     
     manager().pause();
   },
@@ -31,7 +31,7 @@ export const processService = {
     const process = manager().getProcess();
   
     if (!process) throw new NoProcessError();
-    if (process.status === "running") throw new ProcessAlreadyRunningError();
+    if (process.isRunning) throw new ProcessAlreadyRunningError();
     
     manager().resume();
   },

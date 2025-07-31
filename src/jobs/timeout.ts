@@ -9,7 +9,7 @@ export const checkTimeout = () => {
     const duration = Date.now() - interval.startTime.getTime() + interval.prevSessionsDuration;
     console.log(`Current process duration: ${duration} ms`);
     
-    if (process.status === "running" && duration > process.targetDuration) {
+    if (process.isRunning && duration > process.targetDuration) {
       console.log("Process has timed out");
       processManager.reset();
     }

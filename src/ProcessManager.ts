@@ -21,7 +21,8 @@ class ProcessManager {
     this.process = {
       component: process.component,
       quantity: process.quantity,
-      status: "running",
+      isRunning: true,
+      pendingAction: false,
       createdAt: new Date(),
       targetDuration: TARGET_DURATION, // TODO: Value should be calculated based on component built time estimation
     };
@@ -42,14 +43,14 @@ class ProcessManager {
   public pause() {
     if (this.process && this.interval) {
       this.interval.prevSessionsDuration += Date.now() - this.interval.startTime.getTime();
-      this.process.status = "paused";
+      this.process.isRunning = false;
     }
   }
 
   public resume() {
     if (this.process && this.interval) {
       this.interval.startTime = new Date();
-      this.process.status = "running";
+      this.process.isRunning = true;
     }
   }
 
