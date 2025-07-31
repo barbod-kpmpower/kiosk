@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProcess, getProcess, pauseProcess, testProcess } from "../controllers/processController";
+import { createProcess, getProcess, pauseProcess, resumeProcess, testProcess } from "../controllers/processController";
 
 const router = Router();
 
@@ -7,6 +7,6 @@ router.get("/test", testProcess);
 router.get("/status", getProcess);
 router.post("/create", createProcess);
 router.patch("/pause", pauseProcess);
-router.patch("/resume", pauseProcess);
+router.patch("/resume", resumeProcess);
 
 export default router;

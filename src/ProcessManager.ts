@@ -1,3 +1,4 @@
+import { TARGET_DURATION } from "./constants/process";
 import { IInterval, IProcess, IProcessCreateDto } from "./types/process";
 
 class ProcessManager {
@@ -22,8 +23,7 @@ class ProcessManager {
       quantity: process.quantity,
       status: "running",
       createdAt: new Date(),
-      // targetDuration: 10 * 60 * 1000, // TODO: Value should be calculated based on component built time estimation
-      targetDuration: 10_000,
+      targetDuration: TARGET_DURATION, // TODO: Value should be calculated based on component built time estimation
     };
     this.interval = {
       startTime: this.process.createdAt,

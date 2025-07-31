@@ -6,6 +6,7 @@ import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
 import { IProcess, IProcessCreateDto } from "../types/process";
 import { internalServerError } from "../utils/api";
+import { ProcessAlreadyRunningError } from "../errors/process/process-already-running-error";
 
 export const testProcess = (_: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
@@ -49,7 +50,7 @@ export const resumeProcess = (_: Request, res: Response<IApiResponse>) => {
     processService.resume();
     return res.status(200).json({ success: true, message: "Process resumed" });
   } catch (error) {
-    if (error instanceof NoProcessError || error instanceof ProcessAlreadyPausedError) {
+    if (error instanceof NoProcessError || error instanceof ProcessAlreadyRunningError) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
     }
     return internalServerError(res);
