@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import ProcessManager from "../ProcessManager";
-import { ProcessAlreadyRunning } from "../errors/process/process-already-running-error";
 import { ProcessDoesNotExist } from "../errors/process/no-process-error";
+import { ProcessAlreadyRunning } from "../errors/process/process-already-running-error";
 import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
 import { IProcess, IProcessCreateDto } from "../types/process";
-import { createApiError, internalServerError } from "../utils/api";
+import { internalServerError } from "../utils/api";
 
 export const testProcess = (_: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
@@ -28,7 +27,7 @@ export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Resp
     if (error instanceof ProcessAlreadyRunning) {
       return res
         .status(400)
-        .json({ success: false, message: error.message, error: createApiError("ACTIVE_PROCESS_EXISTS") });
+        .json({ success: false, message: error.message, error: error.serialize() });
     }
     return internalServerError(res);
   }
@@ -42,7 +41,7 @@ export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
     if (error instanceof ProcessDoesNotExist) {
       return res
         .status(400)
-        .json({ success: false, message: error.message, error: createApiError("NO_ACTIVE_PROCESS") });
+        .json({ success: false, message: error.message, error: error.serialize() });
     }
     return internalServerError(res);
   }
