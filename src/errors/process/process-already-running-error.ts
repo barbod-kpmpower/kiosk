@@ -1,7 +1,7 @@
 import { BaseServiceError } from "./base-service-error";
 
-export class ProcessAlreadyRunning extends BaseServiceError {
+export class ProcessAlreadyRunningError extends BaseServiceError {
   constructor(message: string = "Process is already running") {
-    super(message, ProcessAlreadyRunning.name, "PROCESS_ALREADY_RUNNING");
+    super(message, ProcessAlreadyRunningError.name, "PROCESS_ALREADY_RUNNING");
   }
 }

@@ -1,5 +1,5 @@
-import { ProcessAlreadyRunning } from "../errors/process/process-already-running-error";
-import { ProcessDoesNotExist } from "../errors/process/no-process-error";
+import { ProcessAlreadyRunningError } from "../errors/process/process-already-running-error";
+import { NoProcessError } from "../errors/process/no-process-error";
 import ProcessManager from "../ProcessManager";
 import { IProcessCreateDto } from "../types/process";
 
@@ -9,10 +9,10 @@ export const processService = {
   },
   create: (process: IProcessCreateDto) => {
     if (!ProcessManager.getInstance().getProcess()) return ProcessManager.getInstance().create(process);
-    else throw new ProcessAlreadyRunning();
+    else throw new ProcessAlreadyRunningError();
   },
   pause: () => {
     if (ProcessManager.getInstance().getProcess()) ProcessManager.getInstance().pause();
-    else throw new ProcessDoesNotExist();
+    else throw new NoProcessError();
   },
 };
