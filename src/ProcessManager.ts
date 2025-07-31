@@ -18,7 +18,7 @@ class ProcessManager {
     this.process = {
       component: process.component,
       quantity: process.quantity,
-      status: "in-progress",
+      status: "running",
       createdAt: new Date(),
       // targetDuration: 10 * 60 * 1000, // TODO: Value should be calculated based on component built time estimation
       targetDuration: 10_000,

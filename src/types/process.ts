@@ -1,7 +1,7 @@
 export interface IProcess {
   component: string;
   quantity: number;
-  status: "in-progress" | "paused" | "completed" | "timeout" | "expired";
+  status: "running" | "paused" | "timeout";
   createdAt: Date;
   targetDuration: number;
 }
