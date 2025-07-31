@@ -1,3 +1,4 @@
+import { InvalidProcessActionError } from "../errors/process/invalid-action-error";
 import { NoProcessError } from "../errors/process/no-process-error";
 import { ProcessAlreadyExistsError } from "../errors/process/process-already-exists-error";
 import { ProcessAlreadyPausedError } from "../errors/process/process-already-paused-error";
@@ -22,6 +23,7 @@ export const processService = {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
+    if (process.pendingAction) throw new InvalidProcessActionError("pause");
     if (!process.isRunning) throw new ProcessAlreadyPausedError();
     
     manager().pause();
@@ -31,6 +33,7 @@ export const processService = {
     const process = manager().getProcess();
   
     if (!process) throw new NoProcessError();
+    if (process.pendingAction) throw new InvalidProcessActionError("resume");
     if (process.isRunning) throw new ProcessAlreadyRunningError();
     
     manager().resume();
