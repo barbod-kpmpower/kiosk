@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { InvalidProcessActionError } from "../errors/process/invalid-action-error";
 import { NoProcessError } from "../errors/process/no-process-error";
-import { ProcessAlreadyExistsError } from "../errors/process/process-already-exists-error";
-import { ProcessAlreadyPausedError } from "../errors/process/process-already-paused-error";
-import { ProcessAlreadyRunningError } from "../errors/process/process-already-running-error";
 import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
 import { IProcess, IProcessCreateDto, IProcessStatusDto } from "../types/process";
@@ -29,7 +26,7 @@ export const createProcess = (req: Request<{}, {}, IProcessCreateDto>, res: Resp
     const process = processService.create(req.body);
     res.status(201).json({ success: true, message: "Process created", data: process });
   } catch (error) {
-    if (error instanceof ProcessAlreadyExistsError) {
+    if (error instanceof InvalidProcessActionError) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
     }
     return internalServerError(res);
@@ -43,8 +40,7 @@ export const pauseProcess = (_: Request, res: Response<IApiResponse>) => {
   } catch (error) {
     if (
       error instanceof NoProcessError ||
-      error instanceof InvalidProcessActionError ||
-      error instanceof ProcessAlreadyPausedError
+      error instanceof InvalidProcessActionError
     ) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
     }
@@ -59,8 +55,7 @@ export const resumeProcess = (_: Request, res: Response<IApiResponse>) => {
   } catch (error) {
     if (
       error instanceof NoProcessError ||
-      error instanceof InvalidProcessActionError ||
-      error instanceof ProcessAlreadyRunningError
+      error instanceof InvalidProcessActionError
     ) {
       return res.status(400).json({ success: false, message: error.message, error: error.serialize() });
     }
