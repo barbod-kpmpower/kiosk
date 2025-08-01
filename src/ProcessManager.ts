@@ -21,6 +21,7 @@ class ProcessManager {
     this.process = {
       component: process.component,
       quantity: process.quantity,
+      state: "running",
       isRunning: true,
       pendingAction: false,
       createdAt: now,

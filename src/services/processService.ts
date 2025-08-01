@@ -1,10 +1,5 @@
 import { InvalidProcessActionError } from "../errors/process/invalid-action-error";
 import { NoProcessError } from "../errors/process/no-process-error";
-import { ProcessAlreadyExistsError } from "../errors/process/process-already-exists-error";
-import { ProcessAlreadyPausedError } from "../errors/process/process-already-paused-error";
-import { ProcessAlreadyRunningError } from "../errors/process/process-already-running-error";
-import { ProcessAlreadyTimedOutError } from "../errors/process/process-already-timed-out-error";
-import { ProcessNotRunningError } from "../errors/process/process-not-running-error";
 import ProcessManager from "../ProcessManager";
 import { IProcessCreateDto } from "../types/process";
 
@@ -27,18 +22,19 @@ export const processService = {
     };
   },
 
-  create: (process: IProcessCreateDto) => {
-    if (manager().getProcess()) throw new ProcessAlreadyExistsError();
+  create: (newProcess: IProcessCreateDto) => {
+    const process = manager().getProcess();
 
-    return manager().create(process);
+    if (process) throw new InvalidProcessActionError(process.state, "start", "Process already exists");
+
+    return manager().create(newProcess);
   },
 
   pause: () => {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
-    if (process.pendingAction) throw new InvalidProcessActionError("pause");
-    if (!process.isRunning) throw new ProcessAlreadyPausedError();
+    if (process.state !== "running") throw new InvalidProcessActionError(process.state, "pause");
 
     manager().pause();
   },
@@ -47,8 +43,7 @@ export const processService = {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
-    if (process.pendingAction) throw new InvalidProcessActionError("resume");
-    if (process.isRunning) throw new ProcessAlreadyRunningError();
+    if (process.state !== "paused") throw new InvalidProcessActionError(process.state, "resume");
 
     manager().resume();
   },
@@ -57,8 +52,7 @@ export const processService = {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
-    if (!process.isRunning) throw new ProcessNotRunningError();
-    if (process.pendingAction) throw new ProcessAlreadyTimedOutError();
+    if (process.state !== "running") throw new InvalidProcessActionError(process.state, "timeout");
 
     manager().timeout();
   },
@@ -67,7 +61,7 @@ export const processService = {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();
-    // if (!process.pendingAction)
+    if (process.state !== "timeout") throw new InvalidProcessActionError(process.state, "extend");
 
     manager().overtime();
   },
