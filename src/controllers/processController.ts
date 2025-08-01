@@ -6,17 +6,20 @@ import { ProcessAlreadyPausedError } from "../errors/process/process-already-pau
 import { ProcessAlreadyRunningError } from "../errors/process/process-already-running-error";
 import { processService } from "../services/processService";
 import { IApiResponse } from "../types/api";
-import { IProcess, IProcessCreateDto } from "../types/process";
+import { IProcess, IProcessCreateDto, IProcessStatusDto } from "../types/process";
 import { internalServerError } from "../utils/api";
 
 export const testProcess = (_: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
 };
 
-export const getProcess = (_: Request, res: Response<IApiResponse<IProcess | null>>) => {
+export const getProcess = (_: Request, res: Response<IApiResponse<IProcessStatusDto>>) => {
   try {
     const process = processService.get();
-    res.status(200).json({ success: true, ...(!process && { message: "No active process" }), data: process });
+    const interval = processService.getInterval();
+    res
+      .status(200)
+      .json({ success: true, ...(!process && { message: "No active process" }), data: { process, interval } });
   } catch (error) {
     return internalServerError(res);
   }

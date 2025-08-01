@@ -10,6 +10,7 @@ export interface IProcess {
 export interface IInterval {
   startTime: Date;
   prevSessionsDuration: number;
+  timeLeft: number;
 }
 
 export interface IProcessCreateDto {
@@ -17,6 +18,7 @@ export interface IProcessCreateDto {
   quantity: number;
 }
 
-export interface IProcessGetDto {
-  data: IProcess | null;
+export interface IProcessStatusDto {
+  process: IProcess | null;
+  interval: IInterval | null;
 }

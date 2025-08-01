@@ -15,6 +15,10 @@ export const processService = {
     return manager().getProcess();
   },
 
+  getInterval: () => {
+    return manager().getInterval();
+  },
+
   create: (process: IProcessCreateDto) => {
     if (manager().getProcess()) throw new ProcessAlreadyExistsError();
 

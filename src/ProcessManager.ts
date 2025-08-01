@@ -29,6 +29,7 @@ class ProcessManager {
     this.interval = {
       startTime: this.process.createdAt,
       prevSessionsDuration: 0,
+      timeLeft: TARGET_DURATION,
     };
 
     return this.process;
@@ -63,24 +64,30 @@ class ProcessManager {
       this.interval.startTime = new Date();
     }
   }
-  
+
   public overtime() {
     if (this.process && this.interval) {
       this.process.targetDuration = OVERTIME_TARGET_DURATION;
       this.process.pendingAction = false;
-      
+
       this.interval.prevSessionsDuration = 0;
       this.interval.startTime = new Date();
     }
   }
 
   // ===== Getters =====
-
+  
   public getProcess() {
     return this.process;
   }
-
+  
   public getInterval() {
+    if (this.process && this.interval) {
+      this.interval.timeLeft =
+        this.process.targetDuration -
+        (this.process.isRunning ? Date.now() - this.interval.startTime.getTime() : this.interval.prevSessionsDuration);
+    }
+  
     return this.interval;
   }
 }
