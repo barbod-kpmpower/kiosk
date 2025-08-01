@@ -13,13 +13,12 @@ export const testProcess = (_: Request, res: Response) => {
   res.status(200).json({ message: "Process test endpoint is working" });
 };
 
-export const getProcess = (_: Request, res: Response<IApiResponse<IProcessStatusDto>>) => {
+export const getProcess = (_: Request, res: Response<IApiResponse<IProcessStatusDto | null>>) => {
   try {
-    const process = processService.get();
-    const interval = processService.getInterval();
+    const status = processService.getStatus();
     res
       .status(200)
-      .json({ success: true, ...(!process && { message: "No active process" }), data: { process, interval } });
+      .json({ success: true, ...(!status && { message: "No active process" }), data: status });
   } catch (error) {
     return internalServerError(res);
   }

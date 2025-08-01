@@ -11,12 +11,20 @@ import { IProcessCreateDto } from "../types/process";
 const manager = () => ProcessManager.getInstance();
 
 export const processService = {
-  get: () => {
-    return manager().getProcess();
-  },
-
-  getInterval: () => {
-    return manager().getInterval();
+  getStatus: () => {
+    const process = manager().getProcess();
+    if (!process) return process;
+    return {
+      ...process,
+      interval: {
+        ...process.interval,
+        remainingDuration:
+          process.interval.targetDuration -
+          (process.isRunning
+            ? Date.now() - process.interval.startTime.getTime()
+            : process.interval.prevSessionsDuration),
+      },
+    };
   },
 
   create: (process: IProcessCreateDto) => {

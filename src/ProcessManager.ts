@@ -1,10 +1,9 @@
 import { OVERTIME_TARGET_DURATION, TARGET_DURATION, TIMEOUT_TARGET_DURATION } from "./constants/process";
-import { IInterval, IProcess, IProcessCreateDto } from "./types/process";
+import { IProcess, IProcessCreateDto } from "./types/process";
 
 class ProcessManager {
   private static instance: ProcessManager;
   private process: IProcess | null = null;
-  private interval: IInterval | null = null;
 
   private constructor() {}
 
@@ -18,18 +17,18 @@ class ProcessManager {
   // ===== Utilities =====
 
   public create(process: IProcessCreateDto) {
+    const now = new Date();
     this.process = {
       component: process.component,
       quantity: process.quantity,
       isRunning: true,
       pendingAction: false,
-      createdAt: new Date(),
-      targetDuration: TARGET_DURATION, // TODO: Value should be calculated based on component built time estimation
-    };
-    this.interval = {
-      startTime: this.process.createdAt,
-      prevSessionsDuration: 0,
-      timeLeft: TARGET_DURATION,
+      createdAt: now,
+      interval: {
+        startTime: now,
+        prevSessionsDuration: 0,
+        targetDuration: TARGET_DURATION, // TODO: Value should be calculated based on component built time estimation
+      },
     };
 
     return this.process;
@@ -37,58 +36,47 @@ class ProcessManager {
 
   public reset() {
     this.process = null;
-    this.interval = null;
   }
 
   // TODO: Determine whether I should have all these null checks?
   public pause() {
-    if (this.process && this.interval) {
-      this.interval.prevSessionsDuration += Date.now() - this.interval.startTime.getTime();
+    if (this.process) {
+      this.process.interval.prevSessionsDuration += Date.now() - this.process.interval.startTime.getTime();
       this.process.isRunning = false;
     }
   }
 
   public resume() {
-    if (this.process && this.interval) {
-      this.interval.startTime = new Date();
+    if (this.process) {
+      this.process.interval.startTime = new Date();
       this.process.isRunning = true;
     }
   }
 
   public timeout() {
-    if (this.process && this.interval) {
-      this.process.targetDuration = TIMEOUT_TARGET_DURATION;
+    if (this.process && this.process.interval) {
+      this.process.interval.targetDuration = TIMEOUT_TARGET_DURATION;
       this.process.pendingAction = true;
 
-      this.interval.prevSessionsDuration = 0;
-      this.interval.startTime = new Date();
+      this.process.interval.prevSessionsDuration = 0;
+      this.process.interval.startTime = new Date();
     }
   }
 
   public overtime() {
-    if (this.process && this.interval) {
-      this.process.targetDuration = OVERTIME_TARGET_DURATION;
+    if (this.process) {
+      this.process.interval.targetDuration = OVERTIME_TARGET_DURATION;
       this.process.pendingAction = false;
 
-      this.interval.prevSessionsDuration = 0;
-      this.interval.startTime = new Date();
+      this.process.interval.prevSessionsDuration = 0;
+      this.process.interval.startTime = new Date();
     }
   }
 
   // ===== Getters =====
-  
+
   public getProcess() {
     return this.process;
-  }
-  
-  public getInterval() {
-    if (this.process && this.interval) {
-      this.interval.timeLeft =
-        this.process.targetDuration -
-        (this.process.isRunning ? Date.now() - this.interval.startTime.getTime() : this.interval.prevSessionsDuration);
-    }
-  
-    return this.interval;
   }
 }
 
