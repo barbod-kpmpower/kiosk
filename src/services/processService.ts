@@ -57,7 +57,7 @@ export const processService = {
     manager().timeout();
   },
 
-  overtime: () => {
+  extend: () => {
     const process = manager().getProcess();
 
     if (!process) throw new NoProcessError();

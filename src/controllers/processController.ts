@@ -70,7 +70,7 @@ export const resumeProcess = (_: Request, res: Response<IApiResponse>) => {
 
 export const overtimeProcess = (_: Request, res: Response<IApiResponse>) => {
   try {
-    processService.overtime();
+    processService.extend();
     return res.status(200).json({ success: true, message: "Process resumed in overtime" });
   } catch (error) {
     return internalServerError(res);
